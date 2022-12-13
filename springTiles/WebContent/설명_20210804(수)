@@ -1,0 +1,124 @@
+
+[springTiles 프로젝트]
+--------------------------------------------------------------		
+	1. 페이지 집중화 ?
+		페이지 마다 공통적으로 나타나는 부분(영역)을 집중화해서 공통적으로 참조할 수 있도록 하는 방법
+	2. layout 배치 폴터
+		TOP
+		BOTTOM
+		ASIDE(LEFT)
+		공통적인 영역을 모듈화.
+		JSP: @include 지시자 , <jsp:include />
+	3. 스프링에서 페이지 집중화를 할 수 있도록 타일즈(Tiles) 라는 방법을 제공한다.
+	4. WebContent 폴더
+		ㄴ inc 폴더 추가: 모든 웹 페이지( 웹 사이트 )에 공통적인 영역
+			ㄴ header.jsp  
+			ㄴ footer.jsp  
+			ㄴ layout.jsp  
+		
+		ㄴ customer 폴더
+			ㄴ inc 폴더 : 공지사항 공통적인 영역
+				ㄴ visual.jsp
+				ㄴ aside.jsp
+				ㄴ layout.jsp
+		ㄴ joinus
+			ㄴ inc 폴더 : 공지사항 공통적인 영역
+				ㄴ visual.jsp
+				ㄴ aside.jsp
+				ㄴ layout.jsp
+				
+	5. notice.jsp
+	6.join.jsp 페이지
+	7.index.jsp (메인 페이지)
+	
+	8. Tiles 다운로드 설치와 설정 방법...
+	 1)http://tiles.apache.org
+	http://archive.apache.org/dist/tiles/v2.2.2/
+	tiles-2.2.2-bin.zip 	다운로드 -> web-INF/lib 폴더 10.jar 추가
+	 2) 타일즈 설정 파일
+		WEB-INF 폴더
+		 ㄴ tiles-defs.xml 파일 추가
+	 3)  tiles-defs.xml 구성 ? 
+	 	Tiles 2.2 Documentation 링크 클릭
+	 		Tutorial-> Basic Usage -> Creating Pages -> Creating and using Tiles pages
+	 4) dispatcher-servlet.xml 설정파일
+	 
+	 
+	9. http://localhost/springTiles/customer/notice.jsp 요청을 하니깐?
+	 MVC 패턴
+	 jsp 페이지 바로 응답.
+	 해결 : 모든 jsp 페이지들만 WEB-INF 폴더 안에
+	 								ㄴ views 폴더
+		
+		
+	----
+	10. 문제점.... 이미지 css 깨짐 - > 해결
+	
+	11. 메이븐 + STS 툴
+	
+	12. 스프링 시큐리티( 권한, 인증 )
+	
+	13.mybatis ORM 프레임워크 
+	--------------------------------------------------------------------------------
+	1. 스프링 트랜잭션
+		ㄴ tx:advice , aop:config 선언적 트랜잭션
+		    insertAndPointUpOfMember(){}
+			dispatcher-servlet.xml 에 
+				xmlns:tx="http://www.springframework.org/schema/tx" 와 
+				http://www.springframework.org/schema/tx 
+				http://www.springframework.org/schema/tx/spring-tx.xsd 를 추가를 한다
+				tx:advice는 어느 메서드에 어느 방식으로 트랜잭션을 어느 시점에 처리 할건지를 나타내는 것이고
+				aop:config는 pointcut를 할당해주는 방법이다
+				
+		ㄴ	@Transational 어노테이션
+			ㄴ  dispatcher-servlet.xml 에 <tx:annotation-driven transaction-manager="transactionManager"/> 를 설정한다
+			 	- 트랜잭션이 필요한 부분( 클래스 , 메서드 ) 위에 @Transational를 붙인다 
+			 		 Propagation.REQUIRES_NEW 은 이미 실행되고 있는 트랜잭션이 있더라도 새로 실행하겠다는 의미이다.
+			 		 전파방식, 격리레벨 이해..
+			 		 
+			 		 
+		
+	2.스프링 Tiles
+		Notice.jsp -> inc : header.jsp footer.jsp , layout.jsp
+					-> customer> inc> aside.jsp,visual.jsp,layout.jsp
+		join.jsp -> 페이징 모듈화
+		
+		tiles 다운로드 -> 10개 jar 파일 ->lib 추가
+		WEB-INF > tiles-defs.xml 설정 파일
+		<bean id="tilesConfigurer"
+    		 class="org.springframework.web.servlet.view.tiles2.TilesConfigurer">
+        	<property name="definitions" value="/WEB-INF/tiles-defs.xml"></property>
+    	</bean> 
+    	<bean class="org.springframework.web.servlet.view.UrlBasedViewResolver">
+      		<property name="viewClass" 
+      			value="org.springframework.web.servlet.view.tiles2.TilesView"></property>
+   		</bean>
+   		
+   		- 컨트롤러 메서드
+   			return "notice.jsp"
+   					"customer.notice"
+   			tile.defs.xml
+   			 <definition name="customer.notice" template="~~~~layout.jsp">
+   			 // f
+   			 // a
+   			 // c
+   			 // h
+   			 // v
+   			 </definition>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		

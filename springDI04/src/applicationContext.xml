@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	  xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+           http://www.springframework.org/schema/context                    
+ 			http://www.springframework.org/schema/context/spring-context.xsd">
+ 			
+ <!-- <context:annotation-config /> -->
+ 
+ 
+ <context:component-scan base-package="di" />
+
+<!-- ***[di 패키지 ,하위 패키지도 자동 컴포넌트 스캔]*** 안에 있는 클래스 -> 자동으로 빈으로 등록-->
+
+ 
+</beans>
+

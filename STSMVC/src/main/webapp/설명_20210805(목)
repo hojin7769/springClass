@@ -1,0 +1,72 @@
+      
+[springTiles 프로젝트]
+--------------------------------------------------------------		
+	
+	
+	1. 메이븐 + STS 툴
+	
+	일반적인 프로젝트 작업순서
+	1단계 : 프로젝트 생성 - 이클립스 ,STS
+	2단계 : 라이브러리 설정 - lib      pom.xml
+	3단계 : 코드 작업
+	4단계 : 컴파일
+	5단계 : 테스트		-		JUnit 단위 테스트
+	6단계 : 패키지 만들기
+	7단계 : 인스톨
+	8단계 : 배포		-			Git
+	
+	2. Maven(메이븐) - 1단계 ~ 8단계 : 프로젝트 생성부터 배포에 관련된 전 과정을 통합해서 관리하는 빌드 도구
+	 			   - 관리 툴
+	 
+	
+	3. 메이븐을 다운로드 + 설정
+	  1) path  	 환경설정
+	  2) M2_HOME 환경설정
+		
+		http://maven.apache.org
+		https://maven.apache.org/download.cgi  	apache-maven-3.8.1-bin.zip 다운로드
+		
+		E:\class\Temp\javaprj>mvn compile
+		컴파일 후 target 폴더 생성  App.class 파일 생성
+		
+		E:\class\Temp\javaprj>mvn test
+		
+		
+		
+		E:\class\Temp\javaprj>mvn package
+			javaprj-1.0-SNAPSHOT.jar
+			
+		E:\class\Temp\javaprj>mvn install
+		 로컬 저장소에 jar 저장
+		 .m2 > repository >
+		 
+		 	원격 저장소 배포
+		 E:\class\Temp\javaprj>mvn deploy
+		
+		
+	
+	
+	
+	
+	13. 스프링 시큐리티( 권한, 인증 )
+	
+	14.mybatis ORM 프레임워크 
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		

@@ -1,0 +1,84 @@
+	
+	스프링에서 트랜잭션 처리
+	- 코드 기반 처리 - 우리가 한 트랜잭션 처리
+	- 선언적 트랜잭션        
+	- 어노테이션 기반
+	
+	-디벨로퍼에 check 제약조건 point<2를 넘지 못하게 제약을 걸어 놓는다
+	- 게시글을 쓰면 포인트가 오르는 insertAndPointUpOfMember() 메서드를 실행
+	- insertAndPointUpOfMember() 메서드 안에는 2개의 [ insert + UPDATE ]쿼리문을 각각 실행한다
+	- point 가 2가 넘으면 오류가 발생한다	
+	-
+	1 트랜잭션 처리 X
+	 각각의 쿼리 문들이 자동 커밋이 되어 중간에 오류가 나도 오류난 쿼리 전에 실행된 쿼리는 적용이 된다 
+	 
+	2 트랜잭션 처리 O - 스프링 트랜잭션 매니저
+	-dispatcher-service.xml 에
+	<bean id="transactionManager" 
+	class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+	-트랜잭션 매니저 빈객체 생성
+	@Autowired
+	private PlatformTransactionManager transactionManager;
+	public void setTransactionManager(PlatformTransactionManager transactionManager) {
+		this.transactionManager = transactionManager;
+	}
+	- 트랙잭션 매니저 의존성 주입
+	
+	    TransactionDefinition def = new DefaultTransactionDefinition();
+		TransactionStatus status = this.transactionManager.getTransaction(def );
+		try {
+			//
+			//
+			//
+			
+			this.transactionManager.commit(status); // 여기까지 성공시 커밋
+		} catch (DataAccessException e) {
+			//롤백
+			this.transactionManager.rollback(status); // 실패시 롤백
+			throw e; // 오류 던지기
+		}//try
+	- 자동커밋을 못하게 하고 오류가 날시 롤백하는 try-catch 문을 통해 트랜잭션 처리를 한다
+	
+	3 트랜잭션 처리 O - 스프링 트랜잭션 템플릿
+	 - try-catch문의 반복되는 틀이 있는 코딩을 템플릿 처리 하여 더욱 쉽게 만들었다
+	 -dispatcher-service.xml 에
+	 <bean id="transactionTemplate"
+		class="org.springframework.transaction.support.TransactionTemplate">
+		<property name="transactionManager" ref="transactionManager"></property>
+	</bean>
+	-트랜잭션 매니저를 포함하고 있는 트랜잭션 템플릿 빈객체 생성
+	@Autowired
+	private TransactionTemplate transactionTemplate;
+	public void setTransactionTemplate(TransactionTemplate transactionTemplate) {
+		this.transactionTemplate = transactionTemplate;
+	}
+	- 트랜잭션 템플릿 의존성 주입
+	
+	this.transactionTemplate.execute(new TransactionCallbackWithoutResult() {
+				
+				@Override
+				protected void doInTransactionWithoutResult(TransactionStatus arg0) {
+					//
+				}
+			});
+	- 트랜잭션 템플릿을 통합 트랜잭션 처리
+	
+	
+	-------------------------------------------------------
+	
+	100. [ 선언적 트랜잭션 처리 ] p522 tx:advise
+		
+	
+	
+	1. tx: advice 태그 설정  메서드 트랜잭션 처리가 된다.
+	2. aop:config 태그 설정
+		
+	
+	
+	
+	
+	
+	
+	200. 어노테이션 기반 트랜잭션 처리 p524 @ ~

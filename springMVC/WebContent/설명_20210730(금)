@@ -1,0 +1,129 @@
+1. 스프링 개요
+2. 스프링 DI
+3. 스프링 AOP - 인증(로깅) , 트랜잭션 , 보안 
+4. *** 스프링 MVC ***
+  1-1) Dynamic Web Project - springMVC 프로젝트 생성
+  1-2) WEB-INF
+  		ㄴ lib
+
+  2) NOTICES , MEMBER 테이블 생성
+	  CREATE TABLE notices (
+	    "SEQ"      VARCHAR2(10 BYTE),
+	    "TITLE"    VARCHAR2(200 BYTE),
+	    "WRITER"   VARCHAR2(50 BYTE),
+	    "CONTENT"  VARCHAR2(4000 BYTE),
+	    "REGDATE"  TIMESTAMP(6),
+	    "HIT"      NUMBER,
+	    "FILESRC"  VARCHAR2(500 BYTE)
+		);
+		-- Table NOTICES이(가) 생성되었습니다.
+	
+			drop table member CASCADE CONSTRAINTS PURGE;
+	
+		-- joinus 폴더 안에 회원가입, 로그인 페이지 
+		CREATE TABLE "MEMBER" (
+	    "ID"        VARCHAR2(50 BYTE),   -- UID -> ID
+	    "PWD"       VARCHAR2(50 BYTE),
+	    "NAME"      VARCHAR2(50 BYTE),
+	    "GENDER"    VARCHAR2(10 BYTE),
+	    "BIRTH"     VARCHAR2(10 BYTE),
+	    "IS_LUNAR"  VARCHAR2(10 BYTE),
+	    "CPHONE"    VARCHAR2(15 BYTE),
+	    "EMAIL"     VARCHAR2(200 BYTE),
+	    "HABIT"     VARCHAR2(200 BYTE),
+	    "REGDATE"   DATE
+		);
+  
+  
+  3)WebContent
+	   ㄴcss
+	   ㄴcustomer 고객센터/공지사항
+	   	 ㄴ notice.jsp 공지사항 목록 페이지
+	   	 ㄴ noticeDetail.jsp 공지사항 상세 보기 페이지
+	   	 ㄴ noticeEdit.jsp 공지사항 수정 페이지
+	   	 ㄴ noticeReg.jsp 공지사항 쓰기 페이지
+	   ㄴ images
+	   ㄴ joinus 회원 - 로그인 , 회원가입  
+	   	 ㄴ images
+		 ㄴ join.jsp + join.css 회원 가입 페이지
+		 ㄴ login.jsp + login.css 로그인 페이지
+	   ㄴ js
+	   ㄴ index.jsp + index.css 메인 페이지
+	   
+  4) Java Resources 수정
+  	ㄴ src
+  		ㄴ newLecture.vo 패키지
+  			ㄴ Member.java DTO == vo
+  			ㄴ Notice.java DTO
+  		ㄴ newlecture.dao 패키지
+  			ㄴ MemberDao.java  DAO
+  			ㄴ NoticeDao.java       <- 수정 완료
+  5-1) JSP/Servlet + MVC 패턴으로 프로젝트 ..
+  	ㄱ.MV[C] 컨트롤러 (서블릿) 작성
+  		1) CommandController.java - init(){ map(k,v) }
+  		2) CommandHandler 인터페이스 + String process(){}
+  		2) ????.properties
+  			list.do = listHandler
+  			write.do = WriteHandler
+  	ㄴ. web.xml 서블릿 등록
+  5-2) 스프링 MVC 
+  	ㄱ. MV[C] 컨트롤러 (서블릿) 작성 X  -> "DispatchedServlet" 클래스를 제공.
+  		C 컨트롤러를 "Front Controller" 라고 부른다
+  	ㄴ. 요청 URL -> ???Handler         ???.properties  작성할 필요가 없다 -> 어떻게 처리
+  		[M]VC 컨트롤러( == 핸들러 )는 클래스 -> <bean> 으로 등록(생성)
+  												요청 URL을 설정
+  	ㄷ. web.xml "DispatchedServlet" 서블릿 등록하면 된다
+  		(1) org.springframework.web.filter.CharacterEncodingFilter 필터 등록
+  		(2) org.springframework.web.servlet.DispatcherServlet 서블릿 등록.
+  			p270  DispatchedServlet 서블릿 등록 방법 
+  				ㄱ) DispatchedServlet은 내부적으로 "스프링 컨테이너"를 생성한다.
+  				ㄴ) WEB-INF
+  					ㄴ [서블릿이름]-servlet.xml
+  						dispatcher-servlet.xml 추가
+  				ㄷ) dispatcher-servlet.xml 설정.
+  				C:\spring-framework-3.0.2.RELEASE-with-docs\spring-framework-3.0.2.RELEASE\docs\spring-framework-reference\pdf
+  				450
+  				
+  	ㄹ. [M]VC - 컨트롤러 (핸들러) 작성.
+  		Java Resources 
+  			ㄴ src
+  				ㄴ controllers.customer 패키지 추가. 공지사항 관련 컨트롤러(핸들러) 추가
+  					ㄴ NoticeController.java 추가 - 공지사항 목록 처리하는 컨트롤러
+  						ㄴ dispatcher-servlet.xml bean 으로 등록하는 코딩..
+  	ㅁ. Notices 테이블 생성 -> 게시글 하나 Insert -> notice.htm 요청 (DB 연동)
+  		(1)INSERT INTO NOTICES 
+			(SEQ, TITLE, CONTENT, WRITER, REGDATE, HIT, FILESRC) 
+			VALUES 
+			 (1, 'SpringMVC Test', '', 'hojin', SYSDATE, 0, null);
+			COMMIT;
+		 (2) NoticeController 수정
+		 (3) notice.jsp 수정
+	ㅂ. 목록 페이지(notice.htm)에서 하나의 공지사항의 제목을 클릭하면 
+		noticeDetail.htm?seq=${dto.seq } 요청이 되면
+		1) 이 요청 URL에 해당 되는 컨트롤러 추가 (선언)-NoticeDetailController.java
+		2) seq => 공지사항 Notice 객체로 가져와서 -> mv에 저장하고
+				noticeDetail.jsp로 이동
+		3) noticeDetail.jsp [Notice 객체] -> 출력하는 코딩
+  	
+  	
+  	
+  	
+  	
+  	
+  	
+  	
+  	
+  	
+  	
+  	
+  	
+  	
+  	
+  	
+  	
+  	
+  	
+  	
+  	
+  	
+  		

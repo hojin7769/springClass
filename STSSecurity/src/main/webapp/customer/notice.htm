@@ -1,0 +1,91 @@
+/customer/notice.htm
+
+
+> Spring Security Chapter 16 <
+1. 개발자 보안 관련 영역
+	1) 인증 (Authentication) 영역
+	2) 인가 (Authorization) 영역 -권한
+	3) UI 처리
+
+2. 역활(Role)?
+
+
+3. 스프링 시큐리티 프로젝트 : 웹 보안 관련 처리 -> 템플릿화 (시간 ,코딩 줄일수 있다.)
+
+
+4. spring-security.xml 설정파일 추가
+
+
+
+
+
+
+예제 진ㅇ행을 위해서  인증과 권한 정책
+1)Role(역활) : ROLE_USER , ROLE_ADMIN
+2) notice.htm : 공지사항 목록 :인증 X
+   noticeDetail.htm 	 :인증 O ROLE_USER 
+	noticeReg.htm		: 관리자 역활로 인증 O
+	noticeEdit.htm		: 		"
+
+3) spring-security.xml
+<!-- 인증과 권한 설정 -->
+<!-- 	
+	<http auto-config="true">
+	p681 스프링 시큐리티가 기본 제공하는 표현식
+		<intercept-url pattern="/customer/noticeDetail.htm" access="ROLE_USER"/>
+		<intercept-url pattern="/customer/noticeReg.htm" access="ROLE_ADMIN"/>
+		<intercept-url pattern="/customer/noticeEdit.htm" access="ROLE_ADMIN"/>
+	</http>
+	
+	
+	in-memory 방식 사용자 계정과 권한 (Role)
+	
+	<authentication-manager>
+		<authentication-provider>
+			<user-service>
+				<user name="hong" password="1111" authorities="ROLE_USER"/>
+				<user name="hojin" password="1111" authorities="ROLE_USER,ROLE_ADMIN"/>
+				<user name="admin" password="1111" authorities="ROLE_ADMIN"/>
+			</user-service>
+		</authentication-provider>
+	</authentication-manager>
+ -->
+ 
+ 
+<!-- 4) web.xml Spring Security 관련 필터 추가 .... -->
+	
+	
+	
+	<!--5) 사용자 로그인 페이지를 쓰겠다  -->
+	<form-login login-page="/joinus/login.htm"/>
+	-login.jsp 페이지				연동 -> springSecurity 와 연동 로그인 처리
+		ID
+		PWD
+		
+********* p682 5.1 일부 경로 스프링 시큐리티 적용 안하기 *******
+
+p.706 
+
+
+
+
+> 스프링 시큐리티 관련된 "태그"
+		<dependency>
+         <groupId>org.springframework.security</groupId>
+         <artifactId>spring-security-taglibs</artifactId>
+         <version>${org.springframework-version}</version>
+		</dependency>
+
+
+> 공지사항 글쓰기 -> 인증받은 사용자 + 글쓰기버튼( hojin )
+[공지 저장하기 ] -> CustomerController.noticeReg() -> insert()
+
+
+
+>p683 DB를 이용한 인증 처리
+
+      
+
+
+	
+

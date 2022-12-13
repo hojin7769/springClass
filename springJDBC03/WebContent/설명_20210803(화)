@@ -1,0 +1,65 @@
+	1. 스프링 JDBC -> DB연동 처리하는 과정이 반복(c,p,e,list,DTO,close)
+					->틀(템플릿)-> 템플릿클래스(JdbcTemplate)
+	2.DataSource객체 - 템플릿클래스,ORM프레임워크( mybatis )
+	3.DataSource 설정하는 3가지 방법
+		ㄱ. 커넥션 풀
+		ㄴ. JNDI
+		ㄷ. DriverManager ( 테스트 목적 )****
+		<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+			<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver"></property>
+			<property name="url" value="jdbc:oracle:thin:@localhost:1521:xe"></property>
+			<property name="username" value="scott"></property>
+			<property name="password" value="tiger"></property>
+		</bean>
+		
+		<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+			<property name="dataSource" ref="dataSource"></property>
+		</bean>
+	4.NoticeDao.java
+		1) 공지사항 상세보기
+			Notice notice = getNotice(seq){}
+			String sql ="?";
+			Notice notice = jdbcTemplate.queryForObject(sql,Object[]{?},Notice);
+			return notice;
+		2) 공지사항 목록
+			List<Notice>list = getNotices(page,field,query){}
+			String sql = "";
+			List<Notice>list = jdbcTemplate.query(sql,new Object[]{?},new ~);
+			return list
+------------어제 복습--------------------
+
+		3) 단일값을 반환하는 경우
+			총페이지 수를 반환하는 메서드 -getCount()메서드
+			CustomerController.notice(){} 추가 코딩
+			int rowCount = this.noticeDao.getCount(field, query);
+			// 총 페이지수 
+			int pageCount = (int)Math.ceil((double)rowCount/15);
+			model.addAttribute("pageCount", pageCount);
+			notice.jsp 페이지 수정 - ${pageCount} page
+			
+		4) 공지사항 등록하는 작업
+			NoticeDao.insert(){} 수정
+			jdbcTemplate.update()
+			
+		5) 공지사항 수정 jdbcTemplate.update()
+		
+		6) 공지사항 삭제  jdbcTemplate.update()
+		
+		
+ 	5. 
+ 
+  	6.JDBC 템플릿 클래스
+ 		1) JdbcTemplate 클래스 ***
+ 		2) SimpleJdbcDaoSupport 클래
+ 		3) *** NamedParameterJdbcTemplate p496(498) ***
+ 			?대신에 : 파라미터 이름 사용하겠다
+ 			(1) dispatcher-servlet.xml 분리
+ 				[ 관리를 위해서 위의 설정파일 용도별로 분리 ]
+ 				DB 연동하는 bean 객체들은 따로 xml 파일을 만들어서 분리 : dispatcher-service.xml
+ 				
+ 			(2)interface NoticeDao.java 구현한 클래스  -> NLNoticeDao.java
+ 			   interface MemberDao.java  구현한 클래스 -> NLMemberDao.java
+ 			   
+ 			
+ 		4)SimpleJdbcInsert
+ 		5)SimpleJdbcCall

@@ -1,0 +1,25 @@
+1. 스프링 개요
+2. 스프링 DI
+3. 스프링 AOP - 인증(로깅) , 트랜잭션 , 보안 
+4. *** 스프링 JDBC ***
+
+1.스프링 JDBC 
+	1) 스프링 -> JDBC 이용한 DAO 클래스 구현 다양하게 구현
+		ㄱ) 템플릿 클래스를 통한 데이터 접근 지원
+		ㄴ) 의미 있는 익셉션 타입
+		ㄷ) 트랜잭션 처리
+	2) DB 연동하는 반복적인 구조의 코딩을 제거하여 스프링에서는
+	 JDBC 템플릿 클래스를 제공한다.
+	3) DataSource 설정이 필요한데?
+		- DB 연동하는 작업을 해야 하고... 스프링에서 DB연동하는 객체가 DataSource 이기
+		 에 설정 할 수 밖에 없다.
+		- JdbcTemplate 클래스 , ORM 프레임워크(mybatis , 하이버네이트, JPA 등등) 에서도
+		 DB 연동할 때 DataSource를 사용하기에 설정이 필요하다.
+	4) DataSource 설정하는 3가지 방식
+		ㄱ. 커넥션 풀을 이용한 Datasource 설정
+		ㄴ. JNDI를 이용한 			"
+		ㄷ. DriverManager를 		" (테스트 목적)
+	5) 스프링에서 제공하는 템플릿 클래스 JDBCTemplate클래스 -> 빈 등록
+		-> NoticeDao.java 모두 수정
+			ㄱ.공지사항 상세보기 수정 getNotice(seq)
+			ㄴ. 공지사항 목록   수정 - getNotices(page,field,query)

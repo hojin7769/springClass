@@ -1,0 +1,203 @@
+1. 스프링 개요
+2. 스프링 DI
+3. 스프링 AOP - 인증(로깅) , 트랜잭션 , 보안 
+4. *** 스프링 MVC ***
+
+  7) springMVC03 로 복사
+  	요청 URL - >???Controller.java
+	목록 notice.htm          -> NoticeController.java
+  	상세 noticeDetail.htm -> NoticeDetailController.java
+  	삭제
+  	수정
+  	추가
+  	
+  	
+  	CustomerController 클래스 1개 만들어서
+  	각각의 컨트롤러 -> 컨트롤러 메서드 선언
+  		(1) controllers.CustomerController.Java
+  		(2) @RequestMapping("/customer/notice.htm")
+				public String notices(
+					@RequestParam(value="pg",defaultValue = "1") int page ,
+					@RequestParam(value="field",defaultValue = "title") String field,
+					@RequestParam(value="query",defaultValue = "%%") String query,
+					Model model ) throws Exception {}
+		(3) 공지사항 글 쓰기...
+			ㄱ.notice.jsp -> 글쓰기 버튼 위치 찾기
+			
+			첨부 파일 X
+			
+			스프링 JDBC ->Mybatis (ORM)
+---------------------------------------------------------------2021.08.02(월)----
+
+	1) File -> new -> Dynamic Web Project를 선택하여 tomcat을 연결후 프로젝트 파일을 만든다
+	 	->톰켓 서버 포트를 80으로 바꾸어 접속이 가능한 형태로 만든다
+	 	-> 프로퍼티를 들어가 encoding 과 font를 모두 UTF-8로 바꾸어 준다
+	2) 스프링에 필요한 모든 jar 파일들을 WEB-INF 안에 lib 폴더에다가 복사해 준다
+	3) web.xml에 filter 를 추가해준다 필터 클래스는 JSP 처럼 따로 만들어줄 필요 없이 
+		스프링에서 제공해 주는 org.springframework.web.filter.CharacterEncodingFilter
+		라는 클래스를 이용하여 인코딩필터를 설정해 준다.
+	4) 또한 web.xml을 만들어 스프링에서 JSP 에서 서블릿의 연결을 담당했던 컨트롤러의 역활을 하는 DispatcherServlet을 설정해 
+		준다 이 DispatcherServlet은 클라이언트의 모든 요청 URL을 분류하여 핸들러(담당자)에게 연결하며
+		나온 값들을 ViewPage에 전달하는 역활을 한다.
+	5) 그것들을 하나로 담고 있는 ???Controller.java 클래스를 만들어 비슷한 역활을 하는 모든 처리를 가지고 있는 컨트롤러를
+	 	만들어 매핑을 걸어준다 컨트롤러는 어노테이션으로 @Controller 를 걸어준다
+	6) 각각의 메서드 들은 @RequestMapping을 통해 들어 오는 요청의 종류를 알수 있다
+		-> 돌아가는 페이지는 return 문 또는 ModuleAndView.setViewName 로 설정이 가능하다.
+		
+	( 복습 정리 )
+	
+	1.Maven Project - pom.xml 주요 라이브러리 관리 X
+	  빌드도구
+	  Dynamic Web Project - springMVC03
+	2. 스프링 주요 모듈(??.jar)	+ojdbc6.jar,json,jstl,dbcp.jar 등등
+	3.web.xml
+	4. 테이블 생성 - 공지사항(notices),회원(Member)
+	5. newlecture.vo 패키지(dto) - Notice.java , Member.java
+	6. newlecture.dao 패키지 - MemberDao.java ,NoticeDao.java
+	7.WebContent
+		ㄴ css
+		ㄴ customer 고객센터(공지사항) - notice.jsp,noticeDetail.jsp ,noticeEdit.jsp ,noticeReg.jsp
+		ㄴ images
+		ㄴ joinus 회원
+		ㄴ js
+	8. 스프링DI
+       스프링AOP
+	   [ 스프링MVC ] 
+	8-1. Front Controller - DispatcherServlet 클래스 - >web.xml 서블릿 등록
+		<servlet-name>dispatcher</servlet-name>
+		웹서버 시작시 서블릿 생성 
+			+ WebXmlApplicationContext 스프링 컨테이너 생성 + 서블릿명-serlvet.xml(dispatcher-serlvet.xml)
+			<context:component-scan base-package="controllers, newlecture.dao" />
+			@Repository
+			NoticeDao{}
+			@Controller
+			@RequestMapping("/customer/*")
+			public class CustomerController {
+				@Autowired
+				private NoticeDao noticeDao = null;
+				public void setNoticeDao(NoticeDao noticeDao) {
+				this.noticeDao = noticeDao;
+				}
+				@RequestMapping
+				/customer/notice.htm 	요청URL -> '컨트롤러 메서드'
+				@RequestMapping("notice.htm ")
+				public String notices(){}
+				/customer/noticeReg.htm 요청URL GET -> 컨트롤러 메서드
+				@RequestMapping(value ={"noticeReg.htm"},method = RequestMethod.GET)
+				public String noticeReg() throws Exception { }
+				/customer/noticeReg.htm 요청URL POST -> 컨트롤러 메서드
+				@RequestMapping(value ={"noticeReg.htm"},method = RequestMethod.POST)
+				public String noticeReg() throws Exception { }
+				
+				
+				// noticeDetail.htm?seq=1
+				@RequestMapping("noticeDetail.htm")
+				public String noticeDetail(
+									String seq,
+									Model model
+									) throws Exception {
+				//1.조회수 1 증가 쿼리
+				//2. 해당 게시글 얻어오는 쿼리
+				Notice notice = this.noticeDao.getNotice(seq);
+				
+				model.addAttribute("notice", notice);		
+				return "noticeDetail.jsp";
+			}
+	
+				
+			}
+	 
+---------------------------------------------------------------2021.08.02(월)----
+
+	1. 공지사항 목록 , 등록, 
+		1) 공지사항 상세보기에서 수정버튼 클릭 => 공지사항 수정
+		2) noticeDetail.jsp 페이지
+		3) <a class="btn-edit button" href="noticeEdit.htm?seq=1">수정</a>
+		4) noticeEdit.jsp 이동 - 컨트롤러 메서드 추가
+	2. 공지사항 삭제
+		1) 공지사항 상세보기에서 수정버튼 클릭 => 공지사항 삭제
+		2) noticeDetail.jsp 페이지
+		3) <a class="btn-del button" href="noticeDel.htm">삭제</a>
+		4) noticeDel.htm?seq=1 요청 URL -> 컨트롤러 메서드 추가
+			삭제할 권한 유무 확인
+			또는 
+			비밀번호 확인
+			글 등록, 수정 , 삭제는 로그인(인증) 벌써 권한 유무를 확인한 상태라고 가정
+		[ JSP 파일 업로드 ]
+		 - form enctype "multipart"/form-data" method="post" 설정 ***
+		 - 외부 파일 업로드 라이브러리 : cos.jar
+		 - request x -> MultipartRequest mrequest = new();
+		
+		
+	3. 파일 첨부 + 공지사항 글 등록 ( 스프링에서 파일 업로드.) p426
+	   *** p438(440) 파일 업로드 ***
+	   1) form enctype "multipart"/form-data" method="post" 설정 ***
+	   2) 스프링 설정파일( dispatcher-servlet.xml)에 multipartResolver를 등록 
+	   -multipartResolver? 첨부파일(멀티파트형식)의 데이터 -> 새당 데이터를 스프링 MVC에서 사용할수 있도록 변환 하는 객체
+	   -@RequestParam 어노테이션을 이용해서 첨부파일(멀티파트형식)을 사용할 수 있도록 해준다
+	  
+	   3) 스프링이 기본 제공하는 MultipartResolver 의 2가지 종류
+	   	   ㄱ. CommonsMultipartResolver  		 - Commons Fileupload API 이용  
+	   	   ㄴ. StandardSerbvletMultipartResolver - 서블릿3.0의 Part 이용	  
+	   4) 위의 2 종류 중에 하나를 스프링 빈으로 등록하면 된다.
+	   		주의사항) DispatcherServlet(FC)에서 약속된 이름인 "multipartResolver"
+	   		라는 이름으로 스프링 빈 등록을 해야한다.    
+	    --의존성 모듈 추가가 필요하더라 (구글링)
+	    com.springsource.org.apache.commons.fileupload-1.2.0.jar
+	    
+	   5) p441 스프링에서 업로드한 파일 접근하기......
+	   	-5가지가 있더라 ...
+	   	p445
+	   		(4) 커맨더 객체를 통한 업로드 파일 접근..
+	   			-(확인) noticeReg.jsp 에서 name 속성이 file 확인...
+	   			<input type="file" id="txtFile" name="file" />
+	   			- Notice.java (DTO)
+	   			 private MultipartFile						file
+	   			 getter,setter 추가
+	   			- ****
+	   			- 설명 추가...
+	    6-1) 첨부파일 있는 경우 공지사항을 수정
+	    	ㄴ 첨부파일 X - 수정 전의 첨부파일 그대로 두면 된다.
+	    	ㄴ 첨부파일 O - 수정 전의 첨부파일은 삭제하고 새로운 첨부파일 정보로 저장.
+	    	
+	   6-2) 첨부파일 없는 경우 공지사항을 수정
+	    	ㄴ 첨부파일 X - 첨부파일 X
+	    	ㄴ 첨부파일 O - 새로운 첨부 파일 추가(저장)
+	    	
+	    	Notice notice = getNotice(seq)
+	    	noticeEdit.jsp
+	    
+	    7) 공지사항 삭제 처리
+	    	(1) 첨부된 파일 있는 경우에는 게시글 삭제시 첨부 파일도 삭제
+	   
+	   
+	  
+
+
+
+
+
+
+
+
+
+
+
+  	
+  	
+  	
+  	
+  	
+  	
+  	
+  	
+  	
+  	
+  	
+  	
+  	
+  	
+  	
+  	
+  	
+  		

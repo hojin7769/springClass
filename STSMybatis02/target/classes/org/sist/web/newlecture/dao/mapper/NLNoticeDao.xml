@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.sist.web.newlecture.dao.NoticeDao">
+ <!-- 우리가 만들고자 하는 DAO 인터페이스 --> 
+ 
+ 	<!-- String field, String query -> 
+ 	${param1} 전달된 값을 그대로 변환
+ 	,#{param2} 전달된 값을 자료형에 맞게 변환
+ 	-->
+ 	<select id="getCount" resultType="Integer" >
+ 	SELECT COUNT(*) CNT 
+	FROM NOTICES 
+	WHERE ${ param1 } LIKE '%${ param2 }%'
+ 	</select>
+ 	
+ 	
+ 	<!--int page, String field, String query  -->
+ 	<select id="getNotices" resultType="org.sist.web.newlecture.vo.Notice">
+ 	SELECT * 
+	FROM 
+		(SELECT ROWNUM NUM, N.* 
+		 FROM 
+			(SELECT * 
+			 FROM NOTICES 
+			 WHERE ${ param2 } LIKE '%${ param3 }%' 
+			 ORDER BY REGDATE DESC 
+			 ) N 
+		 ) 
+	WHERE NUM BETWEEN 1 + (#{ param1 }-1)*15 AND 15 + (#{ param1 }-1)*15 
+				
+ 	</select>
+ 	
+ 	<delete id="delete">
+ 	DELETE NOTICES 
+	 WHERE SEQ = #{ seq }
+ 	
+ 	
+ 	</delete>
+ 	
+ 	<update id="update" parameterType="org.sist.web.newlecture.vo.Notice">
+ 	UPDATE NOTICES 
+	SET TITLE = #{ title }, CONTENT = #{ content }
+	<if test="filesrc != null">
+	, FILESRC = #{ filesrc }
+	</if>
+	WHERE SEQ = #{ seq } 
+ 	
+ 	</update>
+ 	
+ 	<select id="getNotice" resultType="org.sist.web.newlecture.vo.Notice"> 
+ 	SELECT *
+	FROM NOTICES 
+	WHERE SEQ = #{seq}
+ 	</select>
+ 	
+ 	<insert id="insert" parameterType="org.sist.web.newlecture.vo.Notice">
+ 	<selectKey order="BEFORE" keyProperty="seq" resultType="String">
+ 	SELECT MAX(TO_NUMBER(SEQ))+1 
+ 	FROM NOTICES
+ 	</selectKey>
+ 	INSERT INTO NOTICES
+	(SEQ, TITLE, CONTENT, WRITER, REGDATE, HIT, FILESRC)
+	VALUES( #{ seq } , #{ title }, #{ content }, #{ writer }, SYSDATE, 0, #{ filesrc,javaType=String, jdbcType = VARCHAR })
+ 	</insert>
+ 	
+ 	<update id="hitUp">
+ 	UPDATE NOTICES
+ 	SET HIT = HIT +1
+ 	WHERE SEQ = #{ seq }
+ 	</update>
+ 	
+ 	<select id="getHit" resultType="Integer"> 	
+ 	SELECT HIT
+ 	FROM NOTICES
+ 	WHERE SEQ = #{ seq }
+ 	</select>
+ 	
+ 	
+</mapper>

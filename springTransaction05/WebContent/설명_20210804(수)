@@ -1,0 +1,71 @@
+
+--------------------------------------------------------------		
+	1. 트랜잭션 격리 레벨 ( Isolation ) ==  [ == 멀티 쓰레드 동기화처리 ]
+		1) 트랜잭션 처리 과정에 두 개 이상의 트랜잭션이 동시에 
+			공유 자원을 접근하게 된다면 어떻게 진행해야 하는가?
+		2) [ 화장실 ] A사람( 스레드 ) B사람 ( 스레드 )
+			A사람 + 화장실( 임계영역 ) + Lock( 잠금 )/wait() , notify() , notifyAll()
+			
+			=> 트랜잭션 처리에서는 "격리 수준"을 설정해서 처리한다.
+			
+	2. 
+		1) hitUp() 메서드 - 조회수를 증가시키는 메서드 , 트랜잭션
+		2) getHit() 메서드 - 현재 조회수를 읽어오는 메서드 + 트랜잭션
+		
+		조회수( 공유 자원 ) - hitUp() , getHit() 동시성.
+		
+	3. 용어
+	  1) Dirty Read 상황  - 트랜잭션이 걸린 메서드가 실행중 같은 값을 쓰는 메서드가 그 값을 읽어갔지만 틀린 값을 읽어갔을 경우
+	  
+	  	noticeDetail(){ --공지사항 상세보기.
+	  		
+	  		조회수(hit) = 5
+	  		
+	  		@T
+	  		hitUp(){                                                                 }
+	  		[																		 ]
+	  			Update 쿼리 execute.           +        커밋(commit)
+	  					6											롤백(rollback)
+					  		@T(격리수준)
+					  		getHit()
+					  			[				6				]
+	  	}
+	  2) Non-Repeatable Read 상황
+	  	조회수 =  5
+	  	@T
+	  	getHit - 조회수 두번 읽어가는 함수 (가정)
+	  	[																											]
+	  			조회수 한번 읽음															조회수 두번째 읽음
+	  				  5																				6																	     
+												@T
+												hitUp() 조회수 1증가
+			  											6
+	 3) Phantom Read 상황.
+	     여러개의 행(레코드)를 한번에 읽어내는 과정을  반복한다(가정)ㄴ
+	    
+	     @T
+	     method-1()	 
+	     [10개의 레코드 읽기												10개의 레코드 읽기]
+				     						@T
+				     						m2()
+				     						INSERT
+				     						UPDATE
+				     						DELETE
+				     						
+		-> 상황들을 발생하지 않도록 트랜잭션 처리 격리 수준 지정해서 위의 상황 X
+		
+		
+		6) 트랜잭션 격리 수준  			== DBMS (오라클) 설정된 격리 수준
+			(1) DEFULT					- 기본 설정
+			(2) READ_UNCOMMITTED		- 커밋이 안된 경우에도 읽어가겠다.       Dirty Read O
+			(3) READ_COMMITTED			- 반드시 커밋이 된 경우에만 읽어가겠다.  Dirty Read X
+			(4) REPEATABLE_READ			- 										 Non Repeatable Read X
+			(5) SERIALIZABLE			- 모든 행 잠금							 Phantom Read X
+			
+	   7) 오라클은 READ_COMMITTED  SERIALIZABLE  격리 수준만 지원
+	   
+	   8)테스트
+	    인터페이스 NoticeDao.java
+	    hitUp()
+	    getHit()			 			
+	

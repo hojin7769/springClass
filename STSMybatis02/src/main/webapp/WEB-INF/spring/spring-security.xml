@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns:beans="http://www.springframework.org/schema/beans"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xmlns="http://www.springframework.org/schema/security"
+   xmlns:context="http://www.springframework.org/schema/context"
+   xmlns:tx="http://www.springframework.org/schema/tx"
+   xsi:schemaLocation="http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.1.xsd
+      http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+      http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd
+      http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.1.xsd">
+ 
+    <http>
+       <!-- noticeDetail -> 로그인 인증 -> 자동 noticeDetail -->
+       <!-- 로그인 -> 인증 -> 어디로 이동 -->
+       <!-- default-target-url="" 속성 : 로그인 성공시 기본적으로 이동할 페이지 설정 
+       		authentication-failure-url="" 로그인이 실패 했을때 요청할 url
+       		default-target-url="" : 로그인을 성공시 기본적으로 이동할 페이지 경로 설정
+       -->
+       <form-login     
+       		login-page="/joinus/login.htm"
+       	 	authentication-failure-url="/joinus/login.htm?error"
+       	 	default-target-url="/customer/notice.htm"
+        /> 
+       
+       <!-- 로그아웃 성공 시에 이동할 페이지 설정 -->
+       <logout logout-success-url="/customer/notice.htm"/> 
+           
+       <intercept-url pattern="/customer/noticeDetail.htm" access="ROLE_USER" />
+       <intercept-url pattern="/customer/noticeReg.htm" access="ROLE_ADMIN"/>
+       <intercept-url pattern="/customer/noticeEdit.htm" access="ROLE_ADMIN"/>
+    </http>
+  
+  
+  
+  
+  
+  
+   <!--  <authentication-manager>
+       <authentication-provider>
+         <user-service>        
+           <user name="hong" authorities="ROLE_USER" password="1111"/>
+           <user name="admin" authorities="ROLE_ADMIN" password="1234"/>
+           <user name="hojin" authorities="ROLE_USER, ROLE_ADMIN" password="1234"/>
+         </user-service>
+       </authentication-provider>
+    </authentication-manager>
+     -->
+     
+     
+     
+     
+     <authentication-manager>
+     	<authentication-provider>
+     		<jdbc-user-service 
+     		data-source-ref="dataSource"
+     		users-by-username-query="select id as username, pwd as password, 1 as enabled from member where id = ?"
+     		authorities-by-username-query="select id as  username , case when id='admin' then 'ROLE_ADMIN' else 'ROLE_USER' end as authority from member where id = ?"
+     		/>
+     		<!--p.693 jdbc-user-service 태그 관련 속성표 표 16-4  -->
+     	</authentication-provider>
+     </authentication-manager>
+</beans:beans>
+
+<!-- <?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://www.springframework.org/schema/security"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-4.0.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
+	인증과 권한 설정
+	
+	<http auto-config="true" >
+	<http>
+	사용자가 지정한 로그인 페이지를 사용하기 위해서 설정하는 태그 
+		<form-login login-page="/joinus/login.htm" />
+		<csrf disabled="true"/>
+		
+      <intercept-url pattern="/customer/noticeDetail.htm" access="hasRole('ROLE_USER')"/>
+      <intercept-url pattern="/customer/noticeReg.htm" access="hasRole('ROLE_ADMIN')"/>
+      <intercept-url pattern="/customer/noticeEdit.htm" access="hasRole('ROLE_ADMIN')"/>
+   </http>
+	
+	
+	in-memory 방식 사용자 계정과 권한 (Role)
+	
+	<authentication-manager>
+		<authentication-provider>
+			<user-service>
+				<user name="hong" password="1111" authorities="ROLE_USER"/>
+				<user name="hojin" password="1111" authorities="ROLE_USER,ROLE_ADMIN"/>
+				<user name="admin" password="1111" authorities="ROLE_ADMIN"/>
+			</user-service>
+		</authentication-provider>
+	</authentication-manager>
+
+
+	4) web.xml Spring Security 관련 필터 추가 ....
+	
+	
+	
+	5) 사용자 로그인 페이지를 쓰겠다 
+
+</beans:beans>
+ -->

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	  xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+           http://www.springframework.org/schema/context                    
+ 			http://www.springframework.org/schema/context/spring-context.xsd">
+ <context:annotation-config />
+
+<!-- RecordImpl record = new RecordImpl(); -->
+<bean id="record" class="di.RecordImpl" ></bean>
+
+
+<!-- RecordViewImpl service = new RecordViewImpl(record); -->
+<!-- 
+<bean id="service" class="di.RecordViewImpl" >
+	<constructor-arg ref="record"></constructor-arg>
+	<constructor-arg><ref bean ="record" /></constructor-arg>
+</bean>
+ -->
+ 
+<!--  RecordViewImpl service = new RecordViewImpl(record);	//B <-DI( 의존성 주입 ) A
+		 service.setRecord(record); //setter를 통한 의존성 주입 -->
+<bean id="service" class="di.RecordViewImpl" >
+	<!-- name 속성 record == setter(setRecord)  -->
+	<!-- <property name="record" ref="record"></property> -->
+</bean>		 
+
+
+
+ 
+ 
+ 
+</beans>
+

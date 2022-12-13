@@ -1,0 +1,38 @@
+
+[springTiles 프로젝트]
+--------------------------------------------------------------		
+	1. 문제점.... 이미지 css 깨짐 - > 해결
+	
+		http://localhost/springTiles/customer/notice.htm  	고객샌터 > 공지사항
+		http://localhost/springTiles/joinus/login.htm 		로그인
+				2) 로그인 페이지의 CSS 깨지더라
+				login.css 가 적용되어 있는 것이 아니라 join.css 적용 되어져 있다
+		http://localhost/springTiles/joinus/join.htm    	회원가입
+		http://localhost/springTiles/joinus/notice.htm		고객샌터 > 공지사항
+				1) HTTP 상태 404 – 찾을 수 없음
+	
+	
+	2. 메이븐 + STS 툴
+	
+	3. 스프링 시큐리티( 권한, 인증 )
+	
+	4.mybatis ORM 프레임워크 
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
